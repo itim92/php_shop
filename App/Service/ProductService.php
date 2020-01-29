@@ -44,6 +44,53 @@ class ProductService
         return $product;
     }
 
+    public static function save(Product $product) {
+        $data = [
+            'name' => $product->getName(),
+            'price' => $product->getPrice(),
+            'amount' => $product->getAmount(),
+            'description' => $product->getDescription(),
+            'vendor_id' => $product->getVendorId(),
+        ];
+
+        $product_id = $product->getId();
+        if ($product_id > 0) {
+            db()->update('products', $data, [
+                'id' => $product_id
+            ]);
+            static::removeLinksWithFolders($product);
+        } else {
+            $product_id = db()->insert('products', $data);
+        }
+
+//        $folder_ids = $product->getFolderIds();
+//        $product = static::getById($product_id);
+//        $product->removeAllFolders();
+//
+//        foreach ($folder_ids as $folder_id) {
+//            $product->addFolderId($folder_id);
+//        }
+
+        static::updateLinksWithFolders($product_id, $product->getFolderIds());
+
+        return static::getById($product_id);
+    }
+
+    private static function removeLinksWithFolders(Product $product) {
+        db()->delete('products_folders', [
+            'product_id' => $product->getId(),
+        ]);
+    }
+
+    private static function updateLinksWithFolders(int $product_id, array $folder_ids) {
+        foreach($folder_ids as $folder_id) {
+            db()->insert('products_folders', [
+                'product_id' => $product_id,
+                'folder_id' => $folder_id
+            ]);
+        }
+    }
+
     private static function getFolderIdsForProduct(Product $product) {
         $product_id = $product->getId();
 

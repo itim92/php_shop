@@ -41,14 +41,14 @@ class Product extends Model
     /**
      * @var array
      */
-    protected $folder_ids = [];
+    protected $folder_ids;
 
     /**
      * @return int
      */
     public function getId(): int
     {
-        return $this->id;
+        return (int) $this->id;
     }
 
     /**
@@ -56,7 +56,7 @@ class Product extends Model
      */
     public function getName(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     /**
@@ -72,7 +72,7 @@ class Product extends Model
      */
     public function getPrice(): float
     {
-        return $this->price;
+        return (float) $this->price;
     }
 
     /**
@@ -88,7 +88,7 @@ class Product extends Model
      */
     public function getAmount(): int
     {
-        return $this->amount;
+        return (int) $this->amount;
     }
 
     /**
@@ -104,7 +104,7 @@ class Product extends Model
      */
     public function getDescription(): string
     {
-        return $this->description;
+        return (string) $this->description;
     }
 
     /**
@@ -120,7 +120,7 @@ class Product extends Model
      */
     public function getVendorId(): int
     {
-        return $this->vendor_id;
+        return (int) $this->vendor_id;
     }
 
     /**
@@ -135,7 +135,7 @@ class Product extends Model
      * @return array
      */
     public function getFolderIds(): array {
-        return $this->folder_ids;
+        return (array) $this->folder_ids;
     }
 
     public function addFolderId(int $folder_id): void {
@@ -143,11 +143,15 @@ class Product extends Model
     }
 
     public function removeFolderId(int $folder_id): void {
-        $index = array_search($folder_id);
+        $index = array_search($folder_id, $this->folder_ids);
 
         if ($index > -1) {
             unset($this->folder_ids[$index]);
         }
+    }
+
+    public function removeAllFolders(): void {
+        $this->folder_ids = [];
     }
 
     public function isFolderIdExist(int $folder_id): bool {

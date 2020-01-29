@@ -4,25 +4,7 @@ use App\Db\MySQL;
 
 define('APP_DIR', __DIR__ . '/../');
 
-$config = require_once APP_DIR . '/vendor/autoload.php';
-
-//require_once APP_DIR . '/libs/Smarty/Smarty.class.php';
-//require_once APP_DIR . '/App/Db/Functions.php';
-//require_once APP_DIR . '/App/Db/MySQL.php';
-//require_once APP_DIR . '/App/Db/IModel.php';
-//
-//require_once APP_DIR . '/App/Controller/Main.php';
-//require_once APP_DIR . '/App/Controller/Product.php';
-//
-//require_once APP_DIR . '/App/Model/Model.php';
-//require_once APP_DIR . '/App/Model/Folder.php';
-//require_once APP_DIR . '/App/Model/Vendor.php';
-//require_once APP_DIR . '/App/Model/Product.php';
-//
-//require_once APP_DIR . '/App/Service/VendorService.php';
-//require_once APP_DIR . '/App/Service/FolderService.php';
-//require_once APP_DIR . '/App/Service/ProductService.php';
-
+require_once APP_DIR . '/vendor/autoload.php';
 $config = require_once APP_DIR . '/config/config.php';
 
 $smarty = new Smarty();
@@ -30,7 +12,6 @@ $smarty = new Smarty();
 $smarty->template_dir = $config['template']['template_dir'];
 $smarty->compile_dir = $config['template']['compile_dir'];
 $smarty->cache_dir = $config['template']['cache_dir'];
-
 
 /**
  * @return MySQL

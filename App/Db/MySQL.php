@@ -32,26 +32,24 @@ class MySQL
 
     private function connect() {
 
-        if ($this->connect) {
-            return;
+        if (!$this->connect) {
+            $this->connect = mysqli_connect($this->host, $this->username, $this->password, $this->db_name);
+
+            $mysql_errno = mysqli_connect_errno();
+            if ($mysql_errno > 0) {
+                $mysql_error = mysqli_connect_error();
+                $message = "Mysql connect error: ($mysql_errno) $mysql_error";
+                die($message);
+            }
+
+            mysqli_set_charset($this->connect, 'utf8');
         }
 
-        $this->connect = mysqli_connect($this->host, $this->username, $this->password, $this->db_name);
-
-        $mysql_errno = mysqli_connect_errno();
-        if ($mysql_errno > 0) {
-            $mysql_error = mysqli_connect_error();
-            $message = "Mysql connect error: ($mysql_errno) $mysql_error";
-            die($message);
-        }
-
-        mysqli_set_charset($this->connect, 'utf8');
+        return $this->connect;
     }
 
     public function query($query) {
-        $this->connect();
-
-        $result = mysqli_query($this->connect, $query);
+        $result = mysqli_query($this->connect(), $query);
         $this->checkErrors();
 
         return $result;
@@ -100,6 +98,78 @@ class MySQL
         return $data;
     }
 
+    public function insert(string $table_name, array $value) {
+
+        $table_name = $this->escape($table_name);
+
+        $columns = array_keys($value);
+        $columns = array_map(function($item) {
+            return $this->escape($item);
+        }, $columns);
+
+        $columns = implode(',', $columns);
+
+        $values = array_map(function($item) {
+            return $this->escape($item);
+        }, $value);
+        $values = '\'' . implode('\',\'', $values) . '\'';
+
+
+        $query = "INSERT INTO $table_name($columns) VALUES ($values)";
+
+        $this->query($query);
+
+        return mysqli_insert_id($this->connect());
+    }
+
+    public function update(string $table_name, array $values, array $where = [])
+    {
+        $table_name = $this->escape($table_name);
+
+        $set_data = [];
+        foreach ($values as $key => $value) {
+            $set_data[] = $this->escape($key) . ' = \'' . $this->escape($value) . '\'';
+        }
+
+        $set_data = implode(', ', $set_data);
+
+
+        $where_data = [];
+        foreach ($where as $key => $value) {
+            $where_data[] = $this->escape($key) . ' = \'' . $this->escape($value) . '\'';
+        }
+        $query = "UPDATE $table_name SET $set_data";
+
+        if (!empty($where_data)) {
+            $where_data = implode(' AND ', $where_data);
+            $query .= ' WHERE ' . $where_data;
+        }
+
+        $this->query($query);
+    }
+
+    public function delete(string $table_name, array $where = [])
+    {
+        $table_name = $this->escape($table_name);
+
+        $where_data = [];
+        foreach ($where as $key => $value) {
+            $where_data[] = $this->escape($key) . ' = \'' . $this->escape($value) . '\'';
+        }
+        $query = "DELETE FROM $table_name";
+
+        if (!empty($where_data)) {
+            $where_data = implode(' AND ', $where_data);
+            $query .= ' WHERE ' . $where_data;
+        }
+
+        $this->query($query);
+    }
+
+    public function escape(string $value) {
+        return mysqli_real_escape_string($this->connect(), $value);
+    }
+
     private function checkModelClassExist(string $class_name) {
         $class_exist = class_exists($class_name);
 
@@ -117,14 +187,13 @@ class MySQL
     }
 
     private function checkErrors() {
-        $this->connect();
 
-        $mysqli_errno = mysqli_errno($this->connect);
+        $mysqli_errno = mysqli_errno($this->connect());
         if (!$mysqli_errno) {
             return true;
         }
 
-        $mysqli_error = mysqli_error($this->connect);
+        $mysqli_error = mysqli_error($this->connect());
 
         $message = "Mysql query error: ($mysqli_errno) $mysqli_error";
         throw new \Exception($message);
