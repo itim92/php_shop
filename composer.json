@@ -1,0 +1,9 @@
+{
+    "name": "study/shop_cms",
+    "require": {
+        "smarty/smarty": "2.6.31"
+    },
+    "autoload": {
+        "psr-4": {"App\\": "App/"}
+    }
+}
