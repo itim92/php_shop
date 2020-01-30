@@ -1,7 +1,7 @@
 CREATE TABLE `products` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
-  `price` float unsigned NOT NULL DEFAULT 0,
+  `price` decimal(20, 2) unsigned NOT NULL DEFAULT 0,
   `amount` int(10) unsigned NOT NULL DEFAULT 0,
   `description` text,
   `vendor_id` int(10) unsigned NOT NULL,

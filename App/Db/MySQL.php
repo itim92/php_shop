@@ -145,6 +145,7 @@ class MySQL
             $query .= ' WHERE ' . $where_data;
         }
 
+
         $this->query($query);
     }
 

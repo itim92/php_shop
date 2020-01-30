@@ -53,6 +53,7 @@ class ProductService
             'vendor_id' => $product->getVendorId(),
         ];
 
+
         $product_id = $product->getId();
         if ($product_id > 0) {
             db()->update('products', $data, [
