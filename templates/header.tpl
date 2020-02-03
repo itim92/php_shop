@@ -63,6 +63,34 @@
       </button>
     </div>
   </div>
+
+      <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container d-flex justify-content-between">
+
+          {if $user->getId()}
+            <span>Вы зашли как: {$user->getName()}</span>
+            {else}
+
+          <form class="form-inline" method="post" action="/user/login.php">
+            <label class="sr-only" for="inlineFormInputName2">Login</label>
+            <input type="text" name="login" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="login">
+
+            <label class="sr-only" for="inlineFormInputName2">Name</label>
+            <input type="password" name="password" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="pwd">
+
+{*            <div class="form-check mb-2 mr-sm-2">*}
+{*              <input class="form-check-input" type="checkbox" id="inlineFormCheck">*}
+{*              <label class="form-check-label" for="inlineFormCheck">*}
+{*                Remember me*}
+{*              </label>*}
+{*            </div>*}
+
+            <button type="submit" class="btn btn-primary mb-2">Submit</button>
+          </form>
+          {/if}
+
+        </div>
+      </div>
 </header>
 
 <main role="main">

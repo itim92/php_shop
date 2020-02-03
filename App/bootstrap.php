@@ -41,3 +41,28 @@ function smarty() {
 
     return $smarty;
 }
+
+function user() {
+    static $user;
+
+    /**
+     * @var $user \App\Model\User
+     */
+
+    if (is_null($user)) {
+        $user = new \App\Model\User();
+
+        if (isset($_SESSION['user_id'])) {
+            $user_id = (int) $_SESSION['user_id'];
+            $user = \App\Service\UserService::getById($user_id);
+        }
+    }
+
+    return $user;
+}
+
+
+session_start();
+
+
+smarty()->assign_by_ref('user', user());

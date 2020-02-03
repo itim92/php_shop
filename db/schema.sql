@@ -25,3 +25,12 @@ CREATE TABLE `products_folders` (
   `folder_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`product_id`, `folder_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE `users` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
