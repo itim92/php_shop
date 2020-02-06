@@ -25,6 +25,9 @@
 							</div>
 							<small class="text-muted">{$product->getPrice()}</small>
 						</div>
+						<div>
+							<p style="padding: 10px 10px 0 10px; font-size: 0.8em;">{$product->getDescription()}</p>
+						</div>
 					</div>
 				</div>
 			</div>

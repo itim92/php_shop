@@ -19,9 +19,9 @@
             {foreach from=$folders item=folder}
             <tr>
                 <th scope="row"></th>
-                <td>{$folder.name}</td>
-                <td style="white-space: nowrap;"><a href="/folder/edit.php?folder_id={$folder.id}" class="btn btn-sm btn-primary">Редактировать</a>
-                    <form style="display:inline-block;" action="/folder/delete.php" method="post"><input type="hidden" name="folder_id" value="{$folder.id}"><input type="submit" class="btn btn-sm btn-danger ml-2" value="Удалить"/></form></td>
+                <td>{$folder->getName()}</td>
+                <td style="white-space: nowrap;"><a href="/folder/edit.php?folder_id={$folder->getId()}" class="btn btn-sm btn-primary">Редактировать</a>
+                    <form style="display:inline-block;" action="/folder/delete.php" method="post"><input type="hidden" name="folder_id" value="{$folder->getId()}"><input type="submit" class="btn btn-sm btn-danger ml-2" value="Удалить"/></form></td>
             </tr>
             {/foreach}
             </tbody>

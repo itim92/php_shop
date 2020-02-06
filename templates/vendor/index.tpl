@@ -19,9 +19,9 @@
             {foreach from=$vendors item=vendor}
             <tr>
                 <th scope="row"></th>
-                <td>{$vendor.name}</td>
-                <td style="white-space: nowrap;"><a href="/vendor/edit.php?vendor_id={$vendor.id}" class="btn btn-sm btn-primary">Редактировать</a>
-                    <form style="display:inline-block;" action="/vendor/delete.php" method="post"><input type="hidden" name="vendor_id" value="{$vendor.id}"><input type="submit" class="btn btn-sm btn-danger ml-2" value="Удалить"/></form></td>
+                <td>{$vendor->getName()}</td>
+                <td style="white-space: nowrap;"><a href="/vendor/edit.php?vendor_id={$vendor->getId()}" class="btn btn-sm btn-primary">Редактировать</a>
+                    <form style="display:inline-block;" action="/vendor/delete.php" method="post"><input type="hidden" name="vendor_id" value="{$vendor->getId()}"><input type="submit" class="btn btn-sm btn-danger ml-2" value="Удалить"/></form></td>
             </tr>
             {/foreach}
             </tbody>
