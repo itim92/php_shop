@@ -68,8 +68,10 @@
         <div class="container d-flex justify-content-between">
 
           {if $user->getId()}
-            <span>Вы зашли как: {$user->getName()}</span>
-            {else}
+            <span>Вы зашли как: <a href="/user/edit.php">{$user->getName()}</a></span>
+            <a href="/user/logout.php">Выход</a>
+
+          {else}
 
           <form class="form-inline" method="post" action="/user/login.php">
             <label class="sr-only" for="inlineFormInputName2">Login</label>
@@ -87,6 +89,7 @@
 
             <button type="submit" class="btn btn-primary mb-2">Submit</button>
           </form>
+            <a href="/user/edit.php">Регистрация</a>
           {/if}
 
         </div>

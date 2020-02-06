@@ -20,6 +20,11 @@ class User extends Model
     /**
      * @var string
      */
+    private $email = '';
+
+    /**
+     * @var string
+     */
     private $password = '';
 
     /**
@@ -44,6 +49,22 @@ class User extends Model
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
     }
 
     /**

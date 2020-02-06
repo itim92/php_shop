@@ -4,8 +4,12 @@
 namespace App\Controller;
 
 
+use App\Model\Product as ProductModel;
+use App\Service\FolderService;
+use App\Service\ProductService;
 use App\Service\RequestService;
 use App\Service\UserService;
+use App\Service\VendorService;
 
 class User
 {
@@ -30,6 +34,8 @@ class User
             exit;
         }
 
+        $password = UserService::generatePasswordHash($password);
+
         if ($user->getPassword() !== $password) {
             echo $error_msg;
             exit;
@@ -38,5 +44,52 @@ class User
         $_SESSION['user_id'] = $user->getId();
 
         RequestService::redirect('/');
+    }
+
+    public static function logout() {
+        unset($_SESSION['user_id']);
+
+        RequestService::redirect('/');
+    }
+
+    public static function edit() {
+        $user = user();
+
+        smarty()->assign_by_ref('user', $user);
+        smarty()->display('user/edit.tpl');
+    }
+
+    public static function editing() {
+        $user = user();
+
+        $name = RequestService::getStringFromPost('name');
+        $email = RequestService::getStringFromPost('email');
+        $password = RequestService::getStringFromPost('password');
+        $password_repeat = RequestService::getStringFromPost('password_repeat');
+
+        if ($password !== $password_repeat) {
+            die('Passwords mismatch');
+        }
+
+        $is_email_exist = UserService::isEmailExist($email);
+
+        if ($is_email_exist) {
+            die('email is busy');
+        }
+
+        $password = UserService::generatePasswordHash($password);
+
+        $user->setEmail($email);
+        $user->setName($name);
+        $user->setPassword($password);
+
+        if (!$user->getId()) {
+            mail($email, 'Ура, вы успешно зарегистрировались', 'Вы зарегистрировались как: ' . $name);
+        }
+
+        UserService::save($user);
+        RequestService::redirect('/');
+//        smarty()->assign_by_ref('user', $user);
+//        smarty()->display('user/edit.tpl');
     }
 }
