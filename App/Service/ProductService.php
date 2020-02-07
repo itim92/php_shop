@@ -13,12 +13,24 @@ class ProductService
     {
     }
 
+    public static function getCount() {
+        $query = "SELECT COUNT(1) as count FROM products";
+        /**
+         * @var $result Model
+         */
+        $result = db()->fetchRow($query, Model::class);
+
+        return (int) $result->getProperty('count') ?? 0;
+    }
+
     /**
      * @param string|null $hash_key
+     * @param integer $start
+     * @param integer $limit
      * @return Product[]
      */
-    public static function getList(string $hash_key = null): array {
-        $query = "SELECT * FROM products";
+    public static function getList(string $hash_key = null, int $start = 0, int $limit = 100): array {
+        $query = "SELECT * FROM products ORDER BY id LIMIT $start, $limit";
 
         if (is_null($hash_key)) {
             $products = db()->fetchAll($query, Product::class);

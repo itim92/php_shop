@@ -16,13 +16,28 @@ class Product
     }
 
     public static function list() {
-        $products = ProductService::getList('id');
+
+        $current_page = RequestService::getIntFromGet('page', 1);
+        $per_page = 30;
+        $start = $per_page * ($current_page - 1);
+
+        $products = [
+            'count' => ProductService::getCount(),
+            'items' => ProductService::getList('id', $start, $per_page),
+        ];
         $vendors = VendorService::getList('id');
         $folders = FolderService::getList('id');
+
+        $paginator = [
+            'pages' => ceil($products['count'] / $per_page),
+            'current' => $current_page
+        ];
+
 
         smarty()->assign_by_ref('products', $products);
         smarty()->assign_by_ref('vendors', $vendors);
         smarty()->assign_by_ref('folders', $folders);
+        smarty()->assign_by_ref('paginator', $paginator);
         smarty()->display('index.tpl');
     }
 
