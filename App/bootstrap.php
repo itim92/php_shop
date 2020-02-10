@@ -13,6 +13,9 @@ $smarty->template_dir = $config['template']['template_dir'];
 $smarty->compile_dir = $config['template']['compile_dir'];
 $smarty->cache_dir = $config['template']['cache_dir'];
 
+session_start();
+
+
 /**
  * @return MySQL
  */
@@ -62,7 +65,5 @@ function user() {
 }
 
 
-session_start();
-
-
 smarty()->assign_by_ref('user', user());
+echo "<pre>"; var_dump(\App\Service\CartService::getCart()); echo "</pre>";

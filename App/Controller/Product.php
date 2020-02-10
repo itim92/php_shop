@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 use App\Model\Product as ProductModel;
+use App\Service\CartService;
 use App\Service\FolderService;
 use App\Service\ProductService;
 use App\Service\RequestService;
@@ -13,6 +14,18 @@ class Product
 {
     private function __construct()
     {
+    }
+
+    public static function buy() {
+        $product_id = RequestService::getIntFromGet('product_id', 0);
+        $product = ProductService::getById($product_id);
+
+        CartService::addProduct($product);
+
+
+
+        echo "<pre>"; var_dump($product); echo "</pre>";
+        echo "<pre>"; var_dump(CartService::getCart()); echo "</pre>";
     }
 
     public static function list() {
