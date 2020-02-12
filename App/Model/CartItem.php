@@ -37,6 +37,12 @@ class CartItem
         return $this->amount;
     }
 
+    public function getPrice(): float {
+        $price = $this->getProduct()->getPrice() * $this->getAmount();
+
+        return $price;
+    }
+
     /**
      * @param int $amount
      */

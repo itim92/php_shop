@@ -22,7 +22,6 @@
 	</ul>
 </nav>
 
-
 	<div class="row">
 		{foreach from=$products.items item=product}
 			<div class="col-md-4">

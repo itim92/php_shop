@@ -20,18 +20,16 @@ class CartService
     private static $cart;
 
     public static function getCart() {
-        echo "<pre>"; var_dump(static::isCartExist()); echo "</pre>";
-        echo "<pre>"; var_dump($_SESSION); echo "</pre>";
-        
-        if (static::isCartExist()) {
-            $cart_data = $_SESSION[static::$session_key];
-
-            static::$cart = unserialize($cart_data);
-        }
 
         if (!(static::$cart instanceof Cart)) {
+            if (static::isCartExist()) {
+                $cart_data = $_SESSION[static::$session_key];
 
-            static::$cart = new Cart();
+                static::$cart = unserialize($cart_data);
+            } else {
+                static::$cart = new Cart();
+
+            }
         }
 
         return static::$cart;
@@ -48,6 +46,10 @@ class CartService
         $cart->add($product);
 
         static::storeCart();
+    }
+
+    public static function clearCart() {
+        unset($_SESSION[static::$session_key]);
     }
 
     private static function isCartExist() {

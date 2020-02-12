@@ -22,13 +22,10 @@ class Product
 
         CartService::addProduct($product);
 
-
-
-        echo "<pre>"; var_dump($product); echo "</pre>";
-        echo "<pre>"; var_dump(CartService::getCart()); echo "</pre>";
+        RequestService::redirect($_SERVER['HTTP_REFERER']);
     }
 
-    public static function list() {
+    public static function list(RequestService $requestService) {
 
         $current_page = RequestService::getIntFromGet('page', 1);
         $per_page = 30;

@@ -1,6 +1,10 @@
 <?php
 
 use App\Db\MySQL;
+use App\Model\Cart;
+use App\Model\User;
+use App\Service\CartService;
+use App\Service\UserService;
 
 define('APP_DIR', __DIR__ . '/../');
 
@@ -49,21 +53,34 @@ function user() {
     static $user;
 
     /**
-     * @var $user \App\Model\User
+     * @var $user User
      */
 
     if (is_null($user)) {
-        $user = new \App\Model\User();
+        $user = new User();
 
         if (isset($_SESSION['user_id'])) {
             $user_id = (int) $_SESSION['user_id'];
-            $user = \App\Service\UserService::getById($user_id);
+            $user = UserService::getById($user_id);
         }
     }
 
     return $user;
 }
 
+/**
+ * @return Cart
+ */
+function cart() {
+    static $cart;
+
+    if (is_null($cart)) {
+        $cart = CartService::getCart();
+    }
+
+    return $cart;
+}
+
 
 smarty()->assign_by_ref('user', user());
-echo "<pre>"; var_dump(\App\Service\CartService::getCart()); echo "</pre>";
+smarty()->assign_by_ref('cart', cart());
