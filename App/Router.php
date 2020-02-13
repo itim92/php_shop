@@ -23,10 +23,10 @@ class Router
         }
 
         if (preg_match('/\/$/i', $request_url)) {
-            $request_url .= 'index.php';
+            $request_url .= 'index';
         }
 
-        $script_path = $path . $request_url;
+        $script_path = $path . $request_url . '.php';
 
         echo '<pre>'; var_dump($script_path); echo '</pre>';
 

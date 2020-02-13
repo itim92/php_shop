@@ -1,20 +1,20 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Jekyll v3.8.6">
-    <title>Shop CMS</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v3.8.6">
+  <title>Shop CMS</title>
 
 
-    <!-- Bootstrap core CSS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-<meta name="theme-color" content="#563d7c">
+  <meta name="theme-color" content="#563d7c">
 
-{literal}
+  {literal}
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -31,17 +31,17 @@
         }
       }
     </style>
-{/literal}
-    <!-- Custom styles for this template -->
-{*     <link href="album.css" rel="stylesheet"> *}
-  </head>
-  <body>
-    <header>
+  {/literal}
+  <!-- Custom styles for this template -->
+  {*     <link href="album.css" rel="stylesheet"> *}
+</head>
+<body>
+<header>
   <div class="collapse bg-dark" id="navbarHeader">
     <div class="container">
       <div class="row">
         <div class="col-sm-8 col-md-7 py-4">
-          <h4 class="text-white">Shop v0.1</h4>         
+          <h4 class="text-white">Shop v0.1</h4>
         </div>
         <div class="col-sm-4 offset-md-1 py-4">
           <ul class="list-unstyled">
@@ -64,36 +64,36 @@
     </div>
   </div>
 
-      <div class="navbar navbar-dark bg-dark shadow-sm">
-        <div class="container d-flex justify-content-between">
+  <div class="navbar navbar-dark bg-dark shadow-sm">
+    <div class="container d-flex justify-content-between">
 
-          {if $user->getId()}
-            <span>Вы зашли как: <a href="/user/edit.php">{$user->getName()}</a></span>
-            <a href="/user/logout.php">Выход</a>
+      {if $user->getId()}
+        <span>Вы зашли как: <a href="/user/edit">{$user->getName()}</a></span>
+        <a href="/user/logout">Выход</a>
 
-          {else}
+      {else}
 
-          <form class="form-inline" method="post" action="/user/login.php">
-            <label class="sr-only" for="inlineFormInputName2">Login</label>
-            <input type="text" name="login" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="login">
+        <form class="form-inline" method="post" action="/user/login">
+          <label class="sr-only" for="inlineFormInputName2">Login</label>
+          <input type="text" name="login" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="login">
 
-            <label class="sr-only" for="inlineFormInputName2">Name</label>
-            <input type="password" name="password" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="pwd">
+          <label class="sr-only" for="inlineFormInputName2">Name</label>
+          <input type="password" name="password" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="pwd">
 
-{*            <div class="form-check mb-2 mr-sm-2">*}
-{*              <input class="form-check-input" type="checkbox" id="inlineFormCheck">*}
-{*              <label class="form-check-label" for="inlineFormCheck">*}
-{*                Remember me*}
-{*              </label>*}
-{*            </div>*}
+          {*            <div class="form-check mb-2 mr-sm-2">*}
+          {*              <input class="form-check-input" type="checkbox" id="inlineFormCheck">*}
+          {*              <label class="form-check-label" for="inlineFormCheck">*}
+          {*                Remember me*}
+          {*              </label>*}
+          {*            </div>*}
 
-            <button type="submit" class="btn btn-primary mb-2">Submit</button>
-          </form>
-            <a href="/user/edit.php">Регистрация</a>
-          {/if}
+          <button type="submit" class="btn btn-primary mb-2">Submit</button>
+        </form>
+        <a href="/user/edit">Регистрация</a>
+      {/if}
 
-        </div>
-      </div>
+    </div>
+  </div>
 </header>
 
 <main role="main">
@@ -122,8 +122,8 @@
           </table>
 
           <div class="btn-group btn-sm">
-          <a href="/cart/view.php" class="btn btn-sm btn-primary">Оформить заказ</a>
-          <a href="/cart/clear.php" class="btn btn-sm btn-danger">Очистить корзину</a>
+            <a href="/cart/view" class="btn btn-sm btn-primary">Оформить заказ</a>
+            <a href="/cart/clear" class="btn btn-sm btn-danger">Очистить корзину</a>
           </div>
 
         </div>
