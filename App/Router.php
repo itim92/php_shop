@@ -38,4 +38,27 @@ class Router
 
 
     }
+
+    public static function route2() {
+        $request_uri = $_SERVER['REQUEST_URI'];
+
+        $request_data = explode('?', $request_uri);
+        $request_url = $request_data[0];
+
+        $routers = require_once APP_DIR . '/config/routing.php';
+        
+        echo '<pre>'; var_dump($routers); echo '</pre>';
+
+        $route = $routers[$request_url] ?? null;
+
+        if (is_null($route)) {
+            die('404');
+        }
+
+        call_user_func_array($route, []);
+        
+//        echo '<pre>'; var_dump($route); echo '</pre>';
+        
+
+    }
 }
