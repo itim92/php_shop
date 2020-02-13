@@ -25,7 +25,7 @@ class Product
         RequestService::redirect($_SERVER['HTTP_REFERER']);
     }
 
-    public static function list(RequestService $requestService) {
+    public static function list() {
 
         $current_page = RequestService::getIntFromGet('page', 1);
         $per_page = 30;

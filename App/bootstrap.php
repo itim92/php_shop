@@ -81,6 +81,8 @@ function cart() {
     return $cart;
 }
 
+$user = user();
+$cart = cart();
 
-smarty()->assign_by_ref('user', user());
-smarty()->assign_by_ref('cart', cart());
+smarty()->assign_by_ref('user', $user);
+smarty()->assign_by_ref('cart', $cart);
