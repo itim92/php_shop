@@ -25,7 +25,7 @@ class Product
         RequestService::redirect($_SERVER['HTTP_REFERER']);
     }
 
-    public static function list(ProductService $productService, RequestService $request, VendorService $vendorService, FolderService $folderService) {
+    public static function list(ProductService $productService, RequestService $request, VendorService $vendorService, FolderService $folderService, \Smarty $smarty) {
 
         $current_page = $request->getIntFromGet('page', 1);
         $per_page = 30;
@@ -44,11 +44,11 @@ class Product
         ];
 
 
-        smarty()->assign_by_ref('products', $products);
-        smarty()->assign_by_ref('vendors', $vendors);
-        smarty()->assign_by_ref('folders', $folders);
-        smarty()->assign_by_ref('paginator', $paginator);
-        smarty()->display('index.tpl');
+        $smarty->assign_by_ref('products', $products);
+        $smarty->assign_by_ref('vendors', $vendors);
+        $smarty->assign_by_ref('folders', $folders);
+        $smarty->assign_by_ref('paginator', $paginator);
+        $smarty->display('index.tpl');
     }
 
     public static function view() {

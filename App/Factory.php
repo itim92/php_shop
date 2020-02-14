@@ -6,6 +6,8 @@ namespace App;
 
 class Factory
 {
+    private $singletones = [];
+
     public function __construct()
     {
     }
@@ -15,6 +17,16 @@ class Factory
             throw new \Exception('class not exist');
         }
 
-        return new $class_name();
+        if (isset($this->singletones[$class_name])) {
+            return $this->singletones[$class_name];
+        } else {
+            return new $class_name();
+        }
+    }
+
+    public function singletone(string $class_name, callable $callback) {
+        $this->singletones[$class_name] = $callback();
+        
+//        echo '<pre>'; var_dump($this->singletones); echo '</pre>';
     }
 }

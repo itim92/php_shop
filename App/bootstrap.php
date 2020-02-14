@@ -1,8 +1,10 @@
 <?php
 
 use App\Db\MySQL;
+use App\Factory;
 use App\Model\Cart;
 use App\Model\User;
+use App\Router;
 use App\Service\CartService;
 use App\Service\UserService;
 
@@ -11,13 +13,21 @@ define('APP_DIR', __DIR__ . '/../');
 require_once APP_DIR . '/vendor/autoload.php';
 $config = require_once APP_DIR . '/config/config.php';
 
-$smarty = new Smarty();
-
-$smarty->template_dir = $config['template']['template_dir'];
-$smarty->compile_dir = $config['template']['compile_dir'];
-$smarty->cache_dir = $config['template']['cache_dir'];
-
 session_start();
+
+$factory = new Factory();
+
+$factory->singletone(Smarty::class, function() use ($config) {
+    $smarty = new Smarty();
+
+    $smarty->template_dir = $config['template']['template_dir'];
+    $smarty->compile_dir = $config['template']['compile_dir'];
+    $smarty->cache_dir = $config['template']['cache_dir'];
+
+    return $smarty;
+});
+
+$router = new Router($factory);
 
 
 /**
@@ -84,5 +94,6 @@ function cart() {
 $user = user();
 $cart = cart();
 
-smarty()->assign_by_ref('user', $user);
-smarty()->assign_by_ref('cart', $cart);
+$smarty = $factory->getInstance(Smarty::class);
+$smarty->assign_by_ref('user', $user);
+$smarty->assign_by_ref('cart', $cart);
