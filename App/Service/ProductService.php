@@ -9,11 +9,11 @@ use App\Model\Product;
 
 class ProductService
 {
-    private function __construct()
+    public function __construct()
     {
     }
 
-    public static function getCount() {
+    public function getCount() {
         $query = "SELECT COUNT(1) as count FROM products";
         /**
          * @var $result Model
@@ -29,7 +29,7 @@ class ProductService
      * @param integer $limit
      * @return Product[]
      */
-    public static function getList(string $hash_key = null, int $start = 0, int $limit = 100): array {
+    public function getList(string $hash_key = null, int $start = 0, int $limit = 100): array {
         $query = "SELECT * FROM products ORDER BY id LIMIT $start, $limit";
 
         if (is_null($hash_key)) {
@@ -38,7 +38,7 @@ class ProductService
             $products = db()->fetchAllHash($query, $hash_key, Product::class);
         }
 
-        static::getFolderIdsForProducts($products);
+        $this->getFolderIdsForProducts($products);
 
         return $products;
     }
@@ -47,16 +47,16 @@ class ProductService
      * @param int $product_id
      * @return Product
      */
-    public static function getById(int $product_id): Product {
+    public function getById(int $product_id): Product {
         $query = "SELECT * FROM products WHERE id = $product_id";
 
         $product = db()->fetchRow($query, Product::class);
-        static::getFolderIdsForProduct($product);
+        $this->getFolderIdsForProduct($product);
 
         return $product;
     }
 
-    public static function save(Product $product) {
+    public function save(Product $product) {
         $data = [
             'name' => $product->getName(),
             'price' => $product->getPrice(),
@@ -71,31 +71,31 @@ class ProductService
             db()->update('products', $data, [
                 'id' => $product_id
             ]);
-            static::removeLinksWithFolders($product);
+            $this->removeLinksWithFolders($product);
         } else {
             $product_id = db()->insert('products', $data);
         }
 
 //        $folder_ids = $product->getFolderIds();
-//        $product = static::getById($product_id);
+//        $product = $this->getById($product_id);
 //        $product->removeAllFolders();
 //
 //        foreach ($folder_ids as $folder_id) {
 //            $product->addFolderId($folder_id);
 //        }
 
-        static::updateLinksWithFolders($product_id, $product->getFolderIds());
+        $this->updateLinksWithFolders($product_id, $product->getFolderIds());
 
-        return static::getById($product_id);
+        return $this->getById($product_id);
     }
 
-    private static function removeLinksWithFolders(Product $product) {
+    private function removeLinksWithFolders(Product $product) {
         db()->delete('products_folders', [
             'product_id' => $product->getId(),
         ]);
     }
 
-    private static function updateLinksWithFolders(int $product_id, array $folder_ids) {
+    private function updateLinksWithFolders(int $product_id, array $folder_ids) {
         $folder_ids = array_unique($folder_ids);
 
         foreach($folder_ids as $folder_id) {
@@ -106,7 +106,7 @@ class ProductService
         }
     }
 
-    private static function getFolderIdsForProduct(Product $product) {
+    private function getFolderIdsForProduct(Product $product) {
         $product_id = $product->getId();
 
         $query = "SELECT folder_id FROM products_folders WHERE product_id = $product_id";
@@ -120,7 +120,7 @@ class ProductService
     /**
      * @param Product[] $products
      */
-    private static function getFolderIdsForProducts(array $products) {
+    private function getFolderIdsForProducts(array $products) {
 
         $product_ids = array_map(function($item) {
             /**

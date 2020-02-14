@@ -25,18 +25,18 @@ class Product
         RequestService::redirect($_SERVER['HTTP_REFERER']);
     }
 
-    public static function list() {
+    public static function list(ProductService $productService, RequestService $request, VendorService $vendorService, FolderService $folderService) {
 
-        $current_page = RequestService::getIntFromGet('page', 1);
+        $current_page = $request->getIntFromGet('page', 1);
         $per_page = 30;
         $start = $per_page * ($current_page - 1);
 
         $products = [
-            'count' => ProductService::getCount(),
-            'items' => ProductService::getList('id', $start, $per_page),
+            'count' => $productService->getCount(),
+            'items' => $productService->getList('id', $start, $per_page),
         ];
-        $vendors = VendorService::getList('id');
-        $folders = FolderService::getList('id');
+        $vendors = $vendorService->getList('id');
+        $folders = $folderService->getList('id');
 
         $paginator = [
             'pages' => ceil($products['count'] / $per_page),

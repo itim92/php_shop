@@ -4,6 +4,8 @@
 namespace App;
 
 
+use App\Service\RequestService;
+
 class Router
 {
     private static $main = '/product/list.php';
@@ -46,8 +48,6 @@ class Router
         $request_url = $request_data[0];
 
         $routers = require_once APP_DIR . '/config/routing.php';
-        
-        echo '<pre>'; var_dump($routers); echo '</pre>';
 
         $route = $routers[$request_url] ?? null;
 
@@ -55,10 +55,29 @@ class Router
             die('404');
         }
 
-        call_user_func_array($route, []);
-        
-//        echo '<pre>'; var_dump($route); echo '</pre>';
-        
+        $class = $route[0];
+        $method = $route[1];
 
+        $reflectionClassController = new \ReflectionClass($class);
+        if (!$reflectionClassController->hasMethod($method)) {
+            die('503 method does not exist');
+        }
+
+        $reflectionMethod = $reflectionClassController->getMethod($method);
+
+        $arguments = [];
+
+//        $factory = new Factory();
+
+        foreach ($reflectionMethod->getParameters() as $parameter) {
+            $reflectionParameterClass = $parameter->getClass();
+//            echo '<pre>'; var_dump($reflectionParameterClass); echo '</pre>';
+            $className = $reflectionParameterClass->getName();
+
+            $arguments[] = new $className();
+        }
+
+
+        call_user_func_array($route, $arguments);
     }
 }
