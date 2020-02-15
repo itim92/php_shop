@@ -3,18 +3,19 @@
 
 namespace App\Controller;
 
+use App\Http\Request;
 use App\Model\Product as ProductModel;
+use App\Repository\FolderRepository;
+use App\Repository\ProductRepository;
+use App\Repository\VendorRepository;
 use App\Service\CartService;
 use App\Service\FolderService;
 use App\Service\ProductService;
 use App\Service\RequestService;
 use App\Service\VendorService;
 
-class Product
+class Product extends AbstractController
 {
-    private function __construct()
-    {
-    }
 
     public static function buy() {
         $product_id = RequestService::getIntFromGet('product_id', 0);
@@ -25,30 +26,31 @@ class Product
         RequestService::redirect($_SERVER['HTTP_REFERER']);
     }
 
-    public static function list(ProductService $productService, RequestService $request, VendorService $vendorService, FolderService $folderService, \Smarty $smarty) {
+    public function list(Request $request, ProductRepository $productRepository, FolderRepository $folderRepository, VendorRepository $vendorRepository) {
 
         $current_page = $request->getIntFromGet('page', 1);
         $per_page = 30;
         $start = $per_page * ($current_page - 1);
 
         $products = [
-            'count' => $productService->getCount(),
-            'items' => $productService->getList('id', $start, $per_page),
+            'count' => $productRepository->getCount(),
+            'items' => $productRepository->findAllWithLimit($per_page, $start),
         ];
-        $vendors = $vendorService->getList('id');
-        $folders = $folderService->getList('id');
+        $vendors = $vendorRepository->findAll();
+        $folders = $folderRepository->findAll();
 
         $paginator = [
             'pages' => ceil($products['count'] / $per_page),
             'current' => $current_page
         ];
+        
 
-
-        $smarty->assign_by_ref('products', $products);
-        $smarty->assign_by_ref('vendors', $vendors);
-        $smarty->assign_by_ref('folders', $folders);
-        $smarty->assign_by_ref('paginator', $paginator);
-        $smarty->display('index.tpl');
+        return $this->render('index.tpl', [
+           'products' => $products,
+           'vendors' => $vendors,
+           'folders' => $folders,
+           'paginator' => $paginator,
+        ]);
     }
 
     public static function view() {

@@ -3,12 +3,7 @@
 
 namespace App\Model;
 
-
-use App\Db\IModel;
-
-class Model implements IModel
+class Model extends AbstractModel
 {
-    public function getProperty(string $key) {
-        return $this->$key;
-    }
+
 }

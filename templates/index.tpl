@@ -1,6 +1,6 @@
 {include file="header.tpl"}
 <div class="row">
-	<div class="col-6 mb-4"><a href="/product/edit" class="btn btn-success">Добавить товар</a></div>
+	<div class="col-6 mb-4"><a href="/product/edit" class="btn btn-success">Добавить товар ({$products.count})</a></div>
 </div>
 
 <nav>
