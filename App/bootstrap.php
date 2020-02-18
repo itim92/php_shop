@@ -3,6 +3,8 @@
 use App\Config;
 use App\Db\MySQL;
 use App\Di\Container;
+use App\Http\Request;
+use App\Http\Response;
 use App\Kernel;
 use App\Model\Cart;
 use App\Model\User;
@@ -12,6 +14,14 @@ define('APP_DIR', __DIR__ . '/../');
 require_once APP_DIR . '/vendor/autoload.php';
 
 $container = new Container();
+
+$container->singletone(Response::class, function() {
+    return new Response();
+});
+
+$container->singletone(Request::class, function() {
+    return new Request();
+});
 
 $container->singletone(MySQL::class, function() use ($container) {
     $config = $container->get(Config::class);

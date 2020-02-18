@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 use App\Http\Request;
+use App\Http\Response;
 use App\Model\Product as ProductModel;
 use App\Repository\FolderRepository;
 use App\Repository\ProductRepository;
@@ -43,6 +44,12 @@ class Product extends AbstractController
             'pages' => ceil($products['count'] / $per_page),
             'current' => $current_page
         ];
+
+//        return new Response();
+
+        return $this->json([
+            'hello' => 'world',
+        ]);
         
 
         return $this->render('index.tpl', [

@@ -1,9 +1,11 @@
 <?php
 
 
-namespace App;
+namespace App\Router;
 
 
+use App\Config;
+use App\Controller\Exception\MethodDoesNotExistException;
 use App\Di\Container;
 use App\Http\Request;
 use App\Service\RequestService;
@@ -40,10 +42,22 @@ class Router
         $route = $routes[$url] ?? null;
 
         if (is_null($route)) {
-            die('404');
+            $this->notFound();
         }
 
         $controller = $this->container->get($route[0]);
-        $this->container->getInjector()->callMethod($controller, $route[1]);
+        $method = $route[1];
+
+        try {
+            $route = new Route($controller, $method);
+        } catch (MethodDoesNotExistException $exception) {
+            $this->notFound();
+        }
+
+        return $route;
+    }
+
+    private function notFound() {
+        die('404');
     }
 }
