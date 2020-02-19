@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\Http\Request;
 use App\Http\Response;
 use App\Http\ResponseBody\JSONBody;
 use App\Http\ResponseBody\TextBody;
@@ -19,11 +20,17 @@ abstract class AbstractController
     /**
      * @var Response
      */
-    private $response;
+    protected $response;
 
-    public function __construct(\Smarty $smarty, Response $response)
+    /**
+     * @var Request
+     */
+    protected $request;
+
+    public function __construct(\Smarty $smarty, Request $request, Response $response)
     {
         $this->smarty = $smarty;
+        $this->request = $request;
         $this->response = $response;
     }
 

@@ -27,6 +27,17 @@ class Product extends AbstractController
         RequestService::redirect($_SERVER['HTTP_REFERER']);
     }
 
+    /**
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @param FolderRepository $folderRepository
+     * @param VendorRepository $vendorRepository
+     *
+     * @Route(url="/", name="aasd")
+     * @Route(url="/product/list")
+     *
+     * @return Response
+     */
     public function list(Request $request, ProductRepository $productRepository, FolderRepository $folderRepository, VendorRepository $vendorRepository) {
 
         $current_page = $request->getIntFromGet('page', 1);
@@ -45,12 +56,6 @@ class Product extends AbstractController
             'current' => $current_page
         ];
 
-//        return new Response();
-
-        return $this->json([
-            'hello' => 'world',
-        ]);
-        
 
         return $this->render('index.tpl', [
            'products' => $products,
@@ -60,18 +65,29 @@ class Product extends AbstractController
         ]);
     }
 
-    public static function view() {
-        $product_id = RequestService::getIntFromGet('product_id');
+    /**
+     * @param ProductRepository $productRepository
+     * @param VendorRepository $vendorRepository
+     * @param FolderRepository $folderRepository
+     *
+     * @Route(url="/product/view")
+     *
+     * @return Response
+     */
+    public function view(ProductRepository $productRepository, VendorRepository $vendorRepository, FolderRepository $folderRepository)
+    {
+        $product_id = $this->request->getIntFromGet('product_id');
 
-        $product = ProductService::getById($product_id);
+        $product = $productRepository->find($product_id);
 
-        $vendors = VendorService::getList('id');
-        $folders = FolderService::getList('id');
+        $vendors = $vendorRepository->findAll();
+        $folders = $folderRepository->findAll();
 
-        smarty()->assign_by_ref('product', $product);
-        smarty()->assign_by_ref('folders', $folders);
-        smarty()->assign_by_ref('vendors', $vendors);
-        smarty()->display('product/view.tpl');
+        return $this->render('product/view.tpl', [
+            'product' => $product,
+            'folders' => $folders,
+            'vendors' => $vendors,
+        ]);
     }
 
     public static function edit() {
