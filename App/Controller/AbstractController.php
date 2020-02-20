@@ -27,6 +27,11 @@ abstract class AbstractController
      */
     protected $request;
 
+    /**
+     * @var array
+     */
+    protected $shared_data = [];
+
     public function __construct(\Smarty $smarty, Request $request, Response $response)
     {
         $this->smarty = $smarty;
@@ -35,6 +40,14 @@ abstract class AbstractController
     }
 
     protected function render(string $template_name, array $params) {
+
+        foreach ($this->shared_data as $key => &$value) {
+            if (is_scalar($value)) {
+                $this->smarty->assign($key, $value);
+            } else {
+                $this->smarty->assign_by_ref($key, $value);
+            }
+        }
 
         foreach ($params as $key => &$value) {
             if (is_scalar($value)) {
@@ -59,6 +72,16 @@ abstract class AbstractController
         $this->response->setHeader('Content-type', 'application/json');
 
         return $this->response;
+    }
+
+    protected function redirect(string $url) {
+        $this->response->redirect($url);
+
+        return $this->response;
+    }
+
+    public function addSharedData(string $key, $value) {
+        $this->shared_data[$key] = $value;
     }
 
 }

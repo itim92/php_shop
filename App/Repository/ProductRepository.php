@@ -7,11 +7,16 @@ namespace App\Repository;
 use App\Model\Model;
 use App\Model\Product;
 
+/**
+ * Class ProductRepository
+ * @package App\Repository
+ *
+ * @method Product find(int $id)
+ */
 class ProductRepository extends AbstractRepository
 {
 
     protected $model = Product::class;
-
 
     protected function modifyResultList(array $result)
     {

@@ -60,10 +60,6 @@ class Request
         return (array) $this->getRawFromGet($key, $default);
     }
 
-    public function redirect(string $path) {
-        header('Location: ' . $path);
-    }
-
     private function getRawFromPost(string $key, $default = null) {
         return $_POST[$key] ?? $default;
     }

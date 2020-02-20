@@ -18,13 +18,22 @@ use App\Service\VendorService;
 class Product extends AbstractController
 {
 
-    public static function buy() {
-        $product_id = RequestService::getIntFromGet('product_id', 0);
-        $product = ProductService::getById($product_id);
+    /**
+     * @param ProductRepository $productRepository
+     * @param CartService $cartService
+     *
+     * @Route(url="/product/buy")
+     *
+     * @return Response
+     */
+    public function buy(ProductRepository $productRepository, CartService $cartService) {
+        $product_id = $this->request->getIntFromGet('product_id');
 
-        CartService::addProduct($product);
+        $product = $productRepository->find($product_id);
 
-        RequestService::redirect($_SERVER['HTTP_REFERER']);
+        $cartService->addProduct($product);
+
+        return $this->redirect($_SERVER['HTTP_REFERER']);
     }
 
     /**
@@ -33,7 +42,7 @@ class Product extends AbstractController
      * @param FolderRepository $folderRepository
      * @param VendorRepository $vendorRepository
      *
-     * @Route(url="/", name="aasd")
+     * @Route(url="/")
      * @Route(url="/product/list")
      *
      * @return Response

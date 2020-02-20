@@ -12,47 +12,47 @@ class CartService
     /**
      * @var string
      */
-    private static $session_key = 'shop_cart';
+    private $session_key = 'shop_cart';
 
     /**
      * @var Cart
      */
-    private static $cart;
+    private $cart;
 
-    public static function getCart() {
+    public function getCart() {
 
-        if (!(static::$cart instanceof Cart)) {
-            if (static::isCartExist()) {
-                $cart_data = $_SESSION[static::$session_key];
+        if (!($this->cart instanceof Cart)) {
+            if ($this->isCartExist()) {
+                $cart_data = $_SESSION[$this->session_key];
 
-                static::$cart = unserialize($cart_data);
+                $this->cart = unserialize($cart_data);
             } else {
-                static::$cart = new Cart();
+                $this->cart = new Cart();
 
             }
         }
 
-        return static::$cart;
+        return $this->cart;
     }
 
-    public static function storeCart() {
-        $serialized_cart = serialize(static::getCart());
-        
-        $_SESSION[static::$session_key] = $serialized_cart;
+    public function storeCart() {
+        $serialized_cart = serialize($this->getCart());
+
+        $_SESSION[$this->session_key] = $serialized_cart;
     }
 
-    public static function addProduct(Product $product) {
-        $cart = static::getCart();
+    public function addProduct(Product $product) {
+        $cart = $this->getCart();
         $cart->add($product);
 
-        static::storeCart();
+        $this->storeCart();
     }
 
-    public static function clearCart() {
-        unset($_SESSION[static::$session_key]);
+    public function clearCart() {
+        unset($_SESSION[$this->session_key]);
     }
 
-    private static function isCartExist() {
-        return isset($_SESSION[static::$session_key]);
+    private function isCartExist() {
+        return isset($_SESSION[$this->session_key]);
     }
 }

@@ -10,20 +10,20 @@ use App\Service\ProductService;
 use App\Service\RequestService;
 use App\Service\VendorService;
 
-class Cart
+class Cart extends AbstractController
 {
-    private function __construct()
-    {
+
+    /**
+     * @Route(url="/cart/clear")
+     */
+    public function clear(CartService $cartService) {
+        $cartService->clearCart();
+
+        return $this->redirect($_SERVER['HTTP_REFERER']);
     }
 
-    public static function clear() {
-        CartService::clearCart();
-
-        RequestService::redirect($_SERVER['HTTP_REFERER']);
-    }
-
-    public static function view() {
-
-        smarty()->display('cart/view.tpl');
-    }
+//    public static function view() {
+//
+//        smarty()->display('cart/view.tpl');
+//    }
 }

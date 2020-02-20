@@ -8,6 +8,11 @@ class User extends Model
 {
 
     /**
+     * @var string
+     */
+    protected $table_name = 'users';
+
+    /**
      * @var int
      */
     private $id = 0;
