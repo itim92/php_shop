@@ -6,11 +6,8 @@ use App\Di\Container;
 use App\Http\Request;
 use App\Http\Response;
 use App\Kernel;
-use App\Model\Cart;
-use App\Model\User;
 use App\Service\CartService;
 use App\Service\UserService;
-use Composer\Autoload\ClassLoader;
 
 define('APP_DIR', __DIR__ . '/../');
 
@@ -20,22 +17,10 @@ session_start();
 
 $container = new Container();
 
-$container->singletone(Response::class, function() {
-    return new Response();
-});
-
-$container->singletone(Request::class, function() {
-    return new Request();
-});
-
-
-$container->singletone(CartService::class, function() use ($container) {
-    return new CartService();
-});
-
-$container->singletone(UserService::class, function() use ($container) {
-    return new UserService();
-});
+$container->singletone(Response::class);
+$container->singletone(Request::class);
+$container->singletone(CartService::class);
+$container->singletone(UserService::class);
 
 $container->singletone(MySQL::class, function() use ($container) {
     $config = $container->get(Config::class);
@@ -61,12 +46,6 @@ $container->singletone(Smarty::class, function() use ($container) {
     $smarty->template_dir = $config->get('template.template_dir');
     $smarty->compile_dir = $config->get('template.compile_dir');
     $smarty->cache_dir = $config->get('template.cache_dir');
-
-    $user = new User();
-//    $cart = new Cart();
-
-//    $smarty->assign_by_ref('user', $user);
-//    $smarty->assign_by_ref('cart', $cart);
 
     return $smarty;
 });

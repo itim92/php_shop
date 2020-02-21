@@ -3,9 +3,6 @@
 
 namespace App\Middleware;
 
-
-use App\Di\Container;
-use App\Repository\UserRepository;
 use App\Router\Route;
 use App\Service\UserService;
 
@@ -17,23 +14,15 @@ class UserMiddleware implements IMiddleware
      */
     private $userService;
 
-    /**
-     * @var Container
-     */
-    private $container;
-
-    public function __construct(UserService $userService, Container $container)
+    public function __construct(UserService $userService)
     {
         $this->userService = $userService;
-        $this->container = $container;
     }
     public function run(Route $route)
     {
         $controller = $route->getController();
 
-        $userRepository = $this->container->get(UserRepository::class);
-
-        $user = $this->userService->getCurrentUser($userRepository);
+        $user = $this->userService->getCurrentUser();
         $controller->addSharedData('user', $user);
     }
 }

@@ -74,6 +74,7 @@ class Product extends AbstractController
         ]);
     }
 
+    //* @Route(url="/product/view/{product_id}", name="product.view")
     /**
      * @param ProductRepository $productRepository
      * @param VendorRepository $vendorRepository

@@ -17,6 +17,16 @@ class UserService
 
     private static $salt = 'Fd@6k+7+FmhO';
 
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function generatePasswordHash(string $password) {
         return $this->md5($this->md5($password));
     }
@@ -25,13 +35,13 @@ class UserService
         return md5($str . static::$salt);
     }
 
-    public function getCurrentUser(UserRepository $userRepository) {
+    public function getCurrentUser() {
         $user_id = $_SESSION['user_id'] ?? null;
 
 
         if (!($this->user instanceof User)) {
             if (!is_null($user_id)) {
-                $this->user = $userRepository->find($user_id);
+                $this->user = $this->userRepository->find($user_id);
             } else {
                 $this->user = new User();
             }

@@ -107,6 +107,10 @@ class Router
                         $params[$key] = $value;
                     }
 
+                    if ($params['name'] == 'product.view') {
+                        echo '<pre>'; var_dump($params); echo '</pre>'; exit;
+                    }
+
 
                     $routes[$params['url']] = [
                         $controller, $method->getName(),
