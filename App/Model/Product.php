@@ -7,7 +7,7 @@ namespace App\Model;
  * Class Product
  * @package App\Model
  */
-class Product extends Model
+class Product extends AbstractEntity
 {
 
     /**

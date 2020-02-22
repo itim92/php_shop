@@ -5,15 +5,11 @@ namespace App\Controller;
 
 use App\Http\Request;
 use App\Http\Response;
-use App\Model\Product as ProductModel;
 use App\Repository\FolderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\VendorRepository;
 use App\Service\CartService;
-use App\Service\FolderService;
-use App\Service\ProductService;
-use App\Service\RequestService;
-use App\Service\VendorService;
+use App\Service\UserService;
 
 class Product extends AbstractController
 {
@@ -22,12 +18,12 @@ class Product extends AbstractController
      * @param ProductRepository $productRepository
      * @param CartService $cartService
      *
-     * @Route(url="/product/buy")
+     * @Route(url="/product/buy/{product_id}")
      *
      * @return Response
      */
     public function buy(ProductRepository $productRepository, CartService $cartService) {
-        $product_id = $this->request->getIntFromGet('product_id');
+        $product_id = $this->getRoute()->getParam('product_id');
 
         $product = $productRepository->find($product_id);
 
@@ -74,19 +70,18 @@ class Product extends AbstractController
         ]);
     }
 
-    //* @Route(url="/product/view/{product_id}", name="product.view")
     /**
      * @param ProductRepository $productRepository
      * @param VendorRepository $vendorRepository
      * @param FolderRepository $folderRepository
      *
-     * @Route(url="/product/view")
+     * @Route(url="/product/view/{product_id}")
      *
      * @return Response
      */
     public function view(ProductRepository $productRepository, VendorRepository $vendorRepository, FolderRepository $folderRepository)
     {
-        $product_id = $this->request->getIntFromGet('product_id');
+        $product_id = $this->getRoute()->getParam('product_id');
 
         $product = $productRepository->find($product_id);
 
@@ -100,58 +95,75 @@ class Product extends AbstractController
         ]);
     }
 
-    public static function edit() {
-        $user = user();
+    /**
+     * @param UserService $userService
+     * @param ProductRepository $productRepository
+     * @param VendorRepository $vendorRepository
+     * @param FolderRepository $folderRepository
+     *
+     * @Route(url="/product/edit")
+     * @Route(url="/product/edit/{product_id}")
+     *
+     * @return Response
+     */
+    public function edit(UserService $userService, ProductRepository $productRepository, VendorRepository $vendorRepository, FolderRepository $folderRepository) {
+        $user = $userService->getCurrentUser();
 
         if (!$user->getId()) {
             die('permission denied');
         }
 
-
-        $product_id = RequestService::getIntFromGet('product_id');
+        $product_id = (int) $this->getRoute()->getParam('product_id');
 
         if ($product_id) {
-            $product = ProductService::getById($product_id);
+            $product = $productRepository->find($product_id);
         } else {
-            $product = new ProductModel();
+            $product = $productRepository->create();
         }
 
-        $vendors = VendorService::getList('id');
-        $folders = FolderService::getList('id');
+        $vendors = $vendorRepository->findAll();
+        $folders = $folderRepository->findAll();
 
-        smarty()->assign_by_ref('product', $product);
-        smarty()->assign_by_ref('folders', $folders);
-        smarty()->assign_by_ref('vendors', $vendors);
-        smarty()->display('product/edit.tpl');
+        $data = [
+            'product' => $product,
+            'folders' => $folders,
+            'vendors' => $vendors,
+        ];
+
+        return $this->render('product/edit.tpl', $data);
     }
 
-    public static function editing() {
-        $user = user();
 
+    /**
+     * @param UserService $userService
+     * @param ProductRepository $productRepository
+     *
+     * @Route(url="/product/editing")
+     *
+     * @return Response
+     */
+    public function editing(UserService $userService, ProductRepository $productRepository) {
+        $user = $userService->getCurrentUser();
 
         if (!$user->getId()) {
             die('permission denied');
         }
 
-
-        $product_id = RequestService::getIntFromPost('product_id');
-        $name = RequestService::getStringFromPost('name');
-        $price = RequestService::getFloatFromPost('price');
-        $amount = RequestService::getIntFromPost('amount');
-        $description = RequestService::getStringFromPost('description');
-        $vendor_id = RequestService::getIntFromPost('vendor_id');
-        $folder_ids = RequestService::getArrayFromPost('folder_ids');
+        $product_id = $this->request->getStringFromPost('product_id');
+        $name = $this->request->getStringFromPost('name');
+        $price = $this->request->getFloatFromPost('price');
+        $amount = $this->request->getIntFromPost('amount');
+        $description = $this->request->getStringFromPost('description');
+        $vendor_id = $this->request->getIntFromPost('vendor_id');
+        $folder_ids = $this->request->getArrayFromPost('folder_ids');
 
 
         if (!$name || !$price || !$amount) {
             die('not enough data');
         }
 
-        $product = new Product();
+        $product = $productRepository->findOrCreate($product_id);
 
-        if ($product_id) {
-            $product = ProductService::getById($product_id);
-        }
 
         $product->setName($name);
         $product->setPrice($price);
@@ -160,12 +172,13 @@ class Product extends AbstractController
         $product->setVendorId($vendor_id);
 
         $product->removeAllFolders();
+
         foreach ($folder_ids as $folder_id) {
             $product->addFolderId($folder_id);
         }
 
-        ProductService::save($product);
+        $productRepository->save($product);
 
-        RequestService::redirect('/');
+        return $this->redirect('/');
     }
 }

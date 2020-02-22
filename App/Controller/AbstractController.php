@@ -8,6 +8,7 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Http\ResponseBody\JSONBody;
 use App\Http\ResponseBody\TextBody;
+use App\Router\Route;
 
 abstract class AbstractController
 {
@@ -28,6 +29,11 @@ abstract class AbstractController
     protected $request;
 
     /**
+     * @var Route
+     */
+    protected $route;
+
+    /**
      * @var array
      */
     protected $shared_data = [];
@@ -37,6 +43,14 @@ abstract class AbstractController
         $this->smarty = $smarty;
         $this->request = $request;
         $this->response = $response;
+    }
+
+    public function setRoute(Route $route) {
+        $this->route = $route;
+    }
+
+    public function getRoute() {
+        return $this->route;
     }
 
     protected function render(string $template_name, array $params) {

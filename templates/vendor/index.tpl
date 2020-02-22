@@ -2,7 +2,7 @@
 
 <div class="row">
     <div class="col-6 mb-4">
-        <a class="btn btn-success" href="/vendor/edit.php">Добавить производителя</a>
+        <a class="btn btn-success" href="/vendor/edit">Добавить производителя</a>
     </div>
 </div>
 
@@ -20,8 +20,8 @@
             <tr>
                 <th scope="row"></th>
                 <td>{$vendor->getName()}</td>
-                <td style="white-space: nowrap;"><a href="/vendor/edit.php?vendor_id={$vendor->getId()}" class="btn btn-sm btn-primary">Редактировать</a>
-                    <form style="display:inline-block;" action="/vendor/delete.php" method="post"><input type="hidden" name="vendor_id" value="{$vendor->getId()}"><input type="submit" class="btn btn-sm btn-danger ml-2" value="Удалить"/></form></td>
+                <td style="white-space: nowrap;"><a href="/vendor/edit/{$vendor->getId()}" class="btn btn-sm btn-primary">Редактировать</a>
+                    <form style="display:inline-block;" action="/vendor/delete" method="post"><input type="hidden" name="vendor_id" value="{$vendor->getId()}"><input type="submit" class="btn btn-sm btn-danger ml-2" value="Удалить"/></form></td>
             </tr>
             {/foreach}
             </tbody>

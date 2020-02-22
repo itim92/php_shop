@@ -20,17 +20,27 @@ class Route
     private $method;
 
     /**
+     * @var array
+     */
+    private $params;
+
+    /**
      * Route constructor.
      * @param AbstractController $controller
      * @param string $method
+     * @param array $params
+     *
      * @throws MethodDoesNotExistException
      */
-    public function __construct(AbstractController $controller, string $method)
+    public function __construct(AbstractController $controller, string $method, array $params = [])
     {
         $this->isMethodExist($controller, $method);
 
         $this->controller = $controller;
         $this->method = $method;
+        $this->params = $params;
+
+        $this->controller->setRoute($this);
     }
 
     /**
@@ -47,6 +57,14 @@ class Route
     public function getMethod(): string
     {
         return $this->method;
+    }
+
+    public function getParams(): array {
+        return $this->params;
+    }
+
+    public function getParam(string $key) {
+        return $this->params[$key] ?? null;
     }
 
     /**

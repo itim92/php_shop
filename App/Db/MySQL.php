@@ -4,7 +4,7 @@ namespace App\Db;
 
 use App\Model\Product;
 
-class MySQL
+class MySQL extends AbstractMySQL
 {
 /**
  * устанавливать соединение с БД

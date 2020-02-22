@@ -4,64 +4,91 @@
 namespace App\Controller;
 
 
+use App\Http\Response;
+use App\Repository\VendorRepository;
 use App\Service\RequestService;
 use App\Service\VendorService;
 
-class Vendor
+class Vendor extends AbstractController
 {
-    public static function list() {
-        $vendors = VendorService::getList();
 
-        smarty()->assign_by_ref('vendors', $vendors);
-        smarty()->display('vendor/index.tpl');
-    }
+    /**
+     * @param VendorRepository $vendorRepository
+     *
+     * @Route(url="/vendor/list")
+     *
+     * @return Response
+     */
+    public function list(VendorRepository $vendorRepository) {
+        $vendors = $vendorRepository->findAll();
 
-    public static function edit() {
-        $vendor_id = RequestService::getIntFromGet('vendor_id', 0);
-
-        $vendor = new \App\Model\Vendor();
-
-        if ($vendor_id) {
-            $vendor = VendorService::getById($vendor_id);
-        }
-
-        smarty()->assign_by_ref('vendor', $vendor);
-        smarty()->display('vendor/edit.tpl');
+        return $this->render('vendor/index.tpl', [
+            'vendors' => $vendors,
+        ]);
     }
 
 
+    /**
+     * @param VendorRepository $vendorRepository
+     *
+     * @Route(url="/vendor/edit")
+     * @Route(url="/vendor/edit/{vendor_id}")
+     *
+     * @return Response
+     */
+    public function edit(VendorRepository $vendorRepository) {
+        $vendor_id = (int) $this->getRoute()->getParam('vendor_id');
+
+        $vendor = $vendorRepository->findOrCreate($vendor_id);
+
+        return $this->render('vendor/edit.tpl', [
+            'vendor' => $vendor,
+        ]);
+    }
 
 
-    public static function editing() {
-        $vendor_id = RequestService::getIntFromPost('vendor_id');
-        $name = RequestService::getStringFromPost('name');
+    /**
+     * @param VendorRepository $vendorRepository
+     *
+     * @Route(url="/vendor/editing")
+     *
+     * @return Response
+     */
+    public function editing(VendorRepository $vendorRepository) {
+        $vendor_id = $this->request->getIntFromPost('vendor_id');
+        $name = $this->request->getStringFromPost('name');
 
         if (!$name) {
             die('Name required');
         }
 
-        $vendor = new \App\Model\Vendor();
-        if ($vendor_id) {
-            $vendor = VendorService::getById($vendor_id);
-        }
-
+        $vendor = $vendorRepository->findOrCreate($vendor_id);
         $vendor->setName($name);
 
-        VendorService::save($vendor);
+        $vendorRepository->save($vendor);
 
-        static::redirectToList();
+        return $this->redirectToList();
     }
 
-    public static function delete() {
-        $vendor_id = RequestService::getIntFromPost('vendor_id');
 
-        $vendor = VendorService::getById($vendor_id);
-        VendorService::delete($vendor);
+    /**
+     * @param VendorRepository $vendorRepository
+     *
+     * @Route(url="/vendor/delete")
+     *
+     * @return Response
+     */
+    public function delete(VendorRepository $vendorRepository) {
+        $vendor_id = $this->request->getIntFromPost('vendor_id');
 
-        static::redirectToList();
+        $vendor = $vendorRepository->find($vendor_id);
+
+        $vendorRepository->delete($vendor);
+
+        return $this->redirectToList();
     }
 
-    private static function redirectToList() {
-        RequestService::redirect('/vendor/');
+    private function redirectToList() {
+        return $this->redirect('/vendor/list');
     }
 }

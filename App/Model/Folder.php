@@ -3,12 +3,23 @@
 
 namespace App\Model;
 
-class Folder extends Model
+class Folder extends AbstractEntity
 {
     protected $table_name = 'folders';
 
+    protected $table_fields = [
+        'id',
+        'name',
+    ];
+
+    protected $immutable_table_fields = [
+        'id',
+    ];
+
     /**
      * @var int
+     *
+     * @DbColumn()
      */
     protected $id = 0;
 

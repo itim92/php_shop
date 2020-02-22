@@ -19,10 +19,10 @@ class UserRepository extends AbstractRepository
     protected $model = User::class;
 
     public function findByName(string $name): User {
-        $name = $this->mySQL->escape($name);
+        $name = $this->odm->escape($name);
 
         $query = "SELECT * FROM users WHERE name = '$name'";
 
-        return $this->mySQL->fetchRow($query, $this->model);
+        return $this->odm->fetchRow($query, $this->model);
     }
 }
