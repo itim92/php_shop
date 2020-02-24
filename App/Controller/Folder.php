@@ -5,6 +5,8 @@ namespace App\Controller;
 
 
 use App\Http\Response;
+use App\MySQL\Exceptions\GivenClassNotImplementerITableRowException;
+use App\MySQL\Exceptions\QueryException;
 use App\Repository\FolderRepository;
 use App\Service\FolderService;
 use App\Service\RequestService;
@@ -40,7 +42,7 @@ class Folder extends AbstractController
      * @return Response
      */
     public function edit(FolderRepository $folderRepository) {
-        $folder_id = $this->getRoute()->getParam('folder_id');
+        $folder_id = (int) $this->getRoute()->getParam('folder_id');
 
         $folder = $folderRepository->findOrCreate($folder_id);
 
@@ -57,7 +59,7 @@ class Folder extends AbstractController
      * @return Response
      */
     public function editing(FolderRepository $folderRepository) {
-        $folder_id = $this->request->getIntFromPost('folder_id');
+        $folder_id = (int) $this->request->getIntFromPost('folder_id');
         $name = $this->request->getStringFromPost('name');
 
         if (!$name) {
@@ -72,11 +74,20 @@ class Folder extends AbstractController
         return $this->redirectToList();
     }
 
-    public function delete() {
-        $folder_id = RequestService::getIntFromPost('folder_id');
+    /**
+     * @param FolderRepository $repository
+     * @return Response
+     *
+     * @Route(url="/folder/delete")
+     *
+     * @throws GivenClassNotImplementerITableRowException
+     * @throws QueryException
+     */
+    public function delete(FolderRepository $repository) {
+        $folder_id = (int) $this->request->getIntFromPost('folder_id');
 
-        $folder = FolderService::getById($folder_id);
-        FolderService::delete($folder);
+        $folder = $repository->find($folder_id);
+        $repository->delete($folder);
 
         return $this->redirectToList();
     }

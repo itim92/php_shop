@@ -4,6 +4,7 @@
 namespace App\Repository;
 
 
+use App\Model\AbstractEntity;
 use App\Model\User;
 
 /**
@@ -24,5 +25,11 @@ class UserRepository extends AbstractRepository
         $query = "SELECT * FROM users WHERE name = '$name'";
 
         return $this->odm->fetchRow($query, $this->model);
+
+    }
+
+    public function save(AbstractEntity $entity): AbstractEntity
+    {
+        return $entity;
     }
 }

@@ -10,8 +10,7 @@ use App\Model\AbstractModel;
 use App\Model\Model;
 use App\MySQL\Exceptions\GivenClassNotImplementerITableRowException;
 use App\MySQL\Exceptions\QueryException;
-use App\MySQL\Interfaces\ITableRow;
-use App\MySQL\ObjectDataManager;
+use App\MySQL\Interfaces\IObjectDataManager;
 
 abstract class AbstractRepository
 {
@@ -22,7 +21,7 @@ abstract class AbstractRepository
     protected $model;
 
     /**
-     * @var ObjectDataManager
+     * @var IObjectDataManager
      */
     protected $odm;
 
@@ -30,10 +29,10 @@ abstract class AbstractRepository
 
     /**
      * AbstractRepository constructor.
-     * @param ObjectDataManager $odm
+     * @param IObjectDataManager $odm
      * @throws \Exception
      */
-    public function __construct(ObjectDataManager $odm)
+    public function __construct(IObjectDataManager $odm)
     {
         if (!class_exists($this->model) || !in_array(AbstractEntity::class, class_parents($this->model))) {
             throw new \Exception('Model should be a AbstractEntity');
@@ -41,6 +40,31 @@ abstract class AbstractRepository
 
         $this->table_name = $this->getTableName();
         $this->odm = $odm;
+    }
+
+
+    /**
+     * @param AbstractEntity $entity
+     * @return AbstractEntity
+     */
+    public function save(AbstractEntity $entity): AbstractEntity
+    {
+        /**
+         * @var $result AbstractEntity
+         */
+        $result = $this->odm->save($entity);
+
+        return $result;
+
+    }
+
+    /**
+     * @param AbstractEntity $entity
+     * @return int
+     */
+    public function delete(AbstractEntity $entity): int
+    {
+        return $this->odm->delete($entity);
     }
 //
 //    public function save(AbstractModel $model): AbstractModel

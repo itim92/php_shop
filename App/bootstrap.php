@@ -8,6 +8,9 @@ use App\Http\Response;
 use App\Kernel;
 use App\MySQL\ArrayDataManager;
 use App\MySQL\Connection;
+use App\MySQL\Interfaces\IArrayDataManager;
+use App\MySQL\Interfaces\IConnection;
+use App\MySQL\Interfaces\IObjectDataManager;
 use App\MySQL\ObjectDataManager;
 use App\Service\CartService;
 use App\Service\UserService;
@@ -18,7 +21,11 @@ require_once APP_DIR . '/vendor/autoload.php';
 
 session_start();
 
-$container = new Container();
+$container = new Container([
+    IConnection::class => Connection::class,
+    IArrayDataManager::class => ArrayDataManager::class,
+    IObjectDataManager::class => ObjectDataManager::class,
+]);
 
 $container->singletone(Response::class);
 $container->singletone(Request::class);
@@ -35,28 +42,20 @@ $container->singletone(Connection::class, function() use ($container) {
     return new Connection($host, $db_name, $user_name, $user_pwd);
 });
 
-$container->singletone(ArrayDataManager::class, function() use ($container) {
-    $connection = $container->get(Connection::class);
+$container->singletone(ArrayDataManager::class);
+$container->singletone(ObjectDataManager::class);
 
-    return new ArrayDataManager($connection);
-});
-
-$container->singletone(ObjectDataManager::class, function() use ($container) {
-    $connection = $container->get(Connection::class);
-    $arrayDataManager = $container->get(ArrayDataManager::class);
-
-    return new ObjectDataManager($connection, $arrayDataManager);
-});
-
-$container->singletone(MySQL::class, function() use ($container) {
-    $config = $container->get(Config::class);
-    $host = $config->get('db.host');
-    $user_name = $config->get('db.user');
-    $user_pwd = $config->get('db.password');
-    $db_name = $config->get('db.db_name');
-
-    return new MySQL($host, $user_name, $user_pwd, $db_name);
-});
+//
+//$container->singletone(MySQL::class, function() use ($container) {
+//    $config = $container->get(Config::class);
+//
+//    $host = $config->get('db.host');
+//    $user_name = $config->get('db.user');
+//    $user_pwd = $config->get('db.password');
+//    $db_name = $config->get('db.db_name');
+//
+//    return new MySQL($host, $user_name, $user_pwd, $db_name);
+//});
 
 $container->singletone(Config::class, function() {
     $config_path = APP_DIR . '/config/config.php';

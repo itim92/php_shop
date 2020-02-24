@@ -112,6 +112,22 @@ class ObjectDataManager implements IObjectDataManager
         return $data;
     }
 
+    public function delete(ITableRow $row): int {
+        $id = $row->getPrimaryKeyValue();
+        $primary_key = $row->getPrimaryKey();
+
+        return $this->arrayDataManager->delete($row->getTableName(), [
+            $primary_key => $id,
+            ]);
+    }
+
+    /**
+     * @param ITableRow $row
+     * @return ITableRow
+     *
+     * @throws GivenClassNotImplementerITableRowException
+     * @throws QueryException
+     */
     public function save(ITableRow $row): ITableRow
     {
         if ($row->getPrimaryKeyValue() > 0) {
@@ -121,12 +137,45 @@ class ObjectDataManager implements IObjectDataManager
         return $this->insert($row);
     }
 
+    /**
+     * @param ITableRow $row
+     * @return ITableRow
+     * @throws GivenClassNotImplementerITableRowException
+     * @throws QueryException
+     */
     protected function update(ITableRow $row): ITableRow {
-        $data = [];
+        $data = $row->getColumnsForUpdate();
+
+        $id = $row->getPrimaryKeyValue();
+        $primary_key = $row->getPrimaryKey();
 
         $this->arrayDataManager->update($row->getTableName(), $data, [
-            $row->getPrimaryKey() => $row->getPrimaryKeyValue(),
+            $primary_key => $id,
         ]);
+
+
+        $table_name = $row->getTableName();
+        $query = "SELECT * FROM $table_name WHERE $primary_key = $id";
+
+        return $this->fetchRow($query, get_class($row));
+    }
+
+    /**
+     * @param ITableRow $row
+     * @return ITableRow
+     * @throws GivenClassNotImplementerITableRowException
+     * @throws QueryException
+     */
+    protected function insert(ITableRow $row): ITableRow {
+        $data = $row->getColumnsForInsert();
+
+        $id = $this->arrayDataManager->insert($row->getTableName(), $data);
+        $primary_key = $row->getPrimaryKey();
+
+        $table_name = $row->getTableName();
+        $query = "SELECT * FROM $table_name WHERE $primary_key = $id";
+
+        return $this->fetchRow($query, get_class($row));
     }
 
 
@@ -146,10 +195,6 @@ class ObjectDataManager implements IObjectDataManager
         return [];
     }
 
-    public function delete(ITableRow $row): int
-    {
-        return 0;
-    }
 
 
 
@@ -262,6 +307,13 @@ class ObjectDataManager implements IObjectDataManager
 //
 //        return mysqli_affected_rows($this->getConnect());
 //    }
+
+    /**
+     * @return IArrayDataManager
+     */
+    public function getArrayDataManager(): IArrayDataManager {
+        return $this->arrayDataManager;
+    }
 
     public function escape(string $value) {
         return mysqli_real_escape_string($this->getConnect(), $value);

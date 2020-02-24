@@ -4,6 +4,9 @@
 namespace App\Di;
 
 
+use App\MySQL\Connection;
+use App\MySQL\Interfaces\IConnection;
+
 class Container
 {
     /**
@@ -21,16 +24,28 @@ class Container
      */
     private $factories = [];
 
-    public function __construct()
+    /**
+     * @var array
+     */
+    private $interfaces_dictionary = [];
+
+    public function __construct(array $interfaces_dictionary = [])
     {
         $this->injector = new Injector($this);
         $this->singletones[self::class] = $this;
+        $this->interfaces_dictionary = $interfaces_dictionary;
 
     }
 
     public function get($key) {
         if (!class_exists($key)) {
-            throw new \Exception('class not exist');
+
+            if (interface_exists($key)) {
+                $interface_mapping = $this->getInterfaceMapping($key);
+                return $this->get($interface_mapping);
+            }
+
+            throw new \Exception('class not exist: ' . $key);
         }
 
         return $this->getClass($key);
@@ -45,6 +60,10 @@ class Container
 
     public function getInjector() {
         return $this->injector;
+    }
+
+    private function getInterfaceMapping(string $key): ?string {
+        return $this->interfaces_dictionary[$key] ?? null;
     }
 
     private function getClass(string $class_name) {
